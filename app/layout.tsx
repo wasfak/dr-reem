@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { NotchNav } from "@/components/ui/notch-nav";
+import { dark } from "@clerk/themes";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Toaster } from "@/components/ui/sonner";
+
+import { ClerkProvider } from "@clerk/nextjs";
 
 import "./globals.css";
 
@@ -17,16 +20,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-type NavIcon = "home" | "dashboard" | "history"
+type NavIcon = "home" | "dashboard" | "history";
 
 const navItems: Array<{
-  value: string
-  label: string
-  href: string
-  icon: NavIcon
+  value: string;
+  label: string;
+  href: string;
+  icon: NavIcon;
 }> = [
   { value: "home", label: "Home", href: "/", icon: "home" },
-  { value: "dashboard", label: "Dashboard", href: "/dashboard", icon: "dashboard" },
+  {
+    value: "dashboard",
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: "dashboard",
+  },
   { value: "history", label: "History", href: "/history", icon: "history" },
 ];
 
@@ -41,28 +49,56 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    <ClerkProvider
+      appearance={{
+        baseTheme: dark,
+        variables: {
+          colorPrimary: "#ffffff",
+          colorBackground: "rgba(20,20,20,0.6)",
+          colorInputBackground: "rgba(255,255,255,0.05)",
+          colorInputText: "#ffffff",
+          borderRadius: "0.75rem",
+          fontFamily: "var(--font-geist-sans)",
+        },
+        elements: {
+          card: "backdrop-blur-2xl border border-white/10",
+          formButtonPrimary:
+            "bg-white text-black hover:bg-white/90 shadow-[0_0_30px_rgba(255,255,255,0.15)] normal-case",
+        },
+      }}
     >
-      <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-foreground">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      >
+        <body
+          suppressHydrationWarning
+          className="min-h-full flex flex-col bg-background text-foreground"
         >
-          <header className="border-b border-border bg-card/90 backdrop-blur">
-            <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-              <NotchNav items={navItems} defaultValue="home" ariaLabel="Primary navigation" />
-              <ThemeToggle />
-            </div>
-          </header>
-          <main className="flex-1">{children}<Toaster />
-</main>
-        </ThemeProvider>
-      </body>
-    </html>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <header className="border-b border-border bg-card/90 backdrop-blur">
+              <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+                <NotchNav
+                  items={navItems}
+                  defaultValue="home"
+                  ariaLabel="Primary navigation"
+                />
+                <ThemeToggle />
+              </div>
+            </header>
+            <main className="flex-1">
+              {children}
+              <Toaster />
+            </main>
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

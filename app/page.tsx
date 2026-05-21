@@ -23,7 +23,7 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           className="space-y-8"
         >
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -31,17 +31,19 @@ export default function Home() {
           >
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/10 via-transparent to-primary/10 animate-pulse" />
             <div className="w-2 h-2 bg-primary rounded-full animate-ping" />
-            <span className="relative z-10 text-sm font-bold text-primary tracking-wider uppercase">ال عبد اللطيف الطرشوبى</span>
+            <span className="relative z-10 text-sm font-bold text-primary tracking-wider uppercase">
+              ال عبد اللطيف الطرشوبى
+            </span>
             <div className="w-2 h-2 bg-primary rounded-full animate-ping animation-delay-500" />
           </motion.div>
 
           <div className="space-y-6">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
               className="text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-black tracking-tighter leading-[0.85] select-none"
-              style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+              style={{ fontFamily: "Inter, system-ui, sans-serif" }}
             >
               <span className="block font-light text-foreground/70 mb-3 text-4xl md:text-6xl lg:text-7xl">
                 Connect
@@ -50,8 +52,10 @@ export default function Home() {
                 <span className="bg-gradient-to-br from-primary via-primary to-primary/60 bg-clip-text text-transparent font-black relative z-10">
                   Departments
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/60 bg-clip-text text-transparent font-black blur-2xl opacity-50 scale-105" 
-                     style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+                <div
+                  className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-primary/60 bg-clip-text text-transparent font-black blur-2xl opacity-50 scale-105"
+                  style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+                >
                   Departments
                 </div>
                 <motion.div
@@ -64,21 +68,25 @@ export default function Home() {
             </motion.h1>
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
             className="max-w-3xl mx-auto space-y-4"
           >
-            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-medium" 
-               style={{ fontFamily: 'Inter, system-ui, sans-serif' }}>
+            <p
+              className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-medium"
+              style={{ fontFamily: "Inter, system-ui, sans-serif" }}
+            >
               Track everything{" "}
               <span className="text-foreground font-semibold bg-gradient-to-r from-primary/20 to-primary/10 px-2 py-1 rounded-md">
                 Chase nothing twice.
               </span>
             </p>
             <p className="text-lg text-muted-foreground/80 leading-relaxed">
-One place to manage what companies owe you — invoices, payments, and outstanding balances, always up to date.            </p>
+              One place to manage what companies owe you — invoices, payments,
+              and outstanding balances, always up to date.{" "}
+            </p>
           </motion.div>
         </motion.div>
 
@@ -89,10 +97,11 @@ One place to manage what companies owe you — invoices, payments, and outstandi
           className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-4"
         >
           <motion.button
-            whileHover={{ 
-              scale: 1.05, 
-              boxShadow: "0 20px 40px rgba(0,0,0,0.2), 0 0 25px hsl(var(--primary) / 0.3)",
-              y: -2
+            whileHover={{
+              scale: 1.05,
+              boxShadow:
+                "0 20px 40px rgba(0,0,0,0.2), 0 0 25px hsl(var(--primary) / 0.3)",
+              y: -2,
             }}
             whileTap={{ scale: 0.98 }}
             className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground rounded-xl font-semibold text-lg shadow-xl hover:shadow-primary/30 transition-all duration-500 overflow-hidden border border-primary/20"
@@ -109,20 +118,23 @@ One place to manage what companies owe you — invoices, payments, and outstandi
           </motion.button>
 
           <motion.button
-            whileHover={{ 
+            whileHover={{
               scale: 1.05,
               backgroundColor: "hsl(var(--accent))",
               borderColor: "hsl(var(--primary))",
-              boxShadow: "0 15px 30px rgba(0,0,0,0.1), 0 0 15px hsl(var(--primary) / 0.1)",
-              y: -2
+              boxShadow:
+                "0 15px 30px rgba(0,0,0,0.1), 0 0 15px hsl(var(--primary) / 0.1)",
+              y: -2,
             }}
             whileTap={{ scale: 0.98 }}
             className="group relative inline-flex items-center gap-3 px-8 py-4 border-2 border-border/40 rounded-xl font-semibold text-lg hover:border-primary/40 transition-all duration-500 backdrop-blur-xl bg-background/60 hover:bg-background/90 shadow-lg overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <Zap className="relative z-10 w-5 h-5 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300" />
-            <Link href="/dashboard">
-              <span className="relative z-10 tracking-wide">Go to Dashboard</span>
+            <Link href="/dashboard" prefetch={false}>
+              <span className="relative z-10 tracking-wide">
+                Go to Dashboard
+              </span>
             </Link>
           </motion.button>
         </motion.div>
