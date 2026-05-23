@@ -16,6 +16,14 @@ interface LeanNote {
   status: FeedNote["status"];
   userName: string;
   createdAt: Date;
+  amountHistory: {
+    previousAmount: number;
+    newAmount: number;
+    previousPaid: number;
+    newPaid: number;
+    userName: string;
+    changedAt: Date;
+  }[];
 }
 
 interface LeanHistory {
@@ -60,6 +68,14 @@ export async function GET(
     status: n.status,
     userName: n.userName,
     createdAt: new Date(n.createdAt).toISOString(),
+    amountHistory: (n.amountHistory ?? []).map((h) => ({
+      previousAmount: h.previousAmount,
+      newAmount: h.newAmount,
+      previousPaid: h.previousPaid,
+      newPaid: h.newPaid,
+      userName: h.userName,
+      changedAt: new Date(h.changedAt).toISOString(),
+    })),
   }));
 
   const eventItems: FeedEvent[] = history.map((h) => ({
@@ -70,9 +86,14 @@ export async function GET(
     createdAt: new Date(h.createdAt).toISOString(),
   }));
 
+  const totalOutstanding = noteItems.reduce(
+    (sum, n) => sum + Math.max(n.amount - n.amountPaid, 0),
+    0,
+  );
+
   const feed: FeedItem[] = [...noteItems, ...eventItems].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
-  return NextResponse.json({ company, feed });
+  return NextResponse.json({ company, feed, totalOutstanding });
 }

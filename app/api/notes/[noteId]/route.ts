@@ -1,11 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { connectDB } from "@/lib/db";
 import { Note } from "@/models/Note";
 
 export const runtime = "nodejs";
 
-// EDIT a note (text and/or amount)
+async function getUserName(): Promise<string> {
+  const user = await currentUser();
+  return (
+    user?.fullName ||
+    user?.username ||
+    user?.primaryEmailAddress?.emailAddress ||
+    "Unknown user"
+  );
+}
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ noteId: string }> },
@@ -25,25 +34,50 @@ export async function PATCH(
     return NextResponse.json({ error: "Note not found" }, { status: 404 });
   }
 
+  // --- Text-only edit ---
   if (typeof body?.text === "string" && body.text.trim()) {
     note.text = body.text.trim();
   }
-  if (typeof body?.amount === "number" && body.amount >= 0) {
-    note.amount = body.amount;
-  }
-  if (typeof body?.amountPaid === "number" && body.amountPaid >= 0) {
-    note.amountPaid = body.amountPaid;
-  }
-  if (body?.markPaid === true) {
-    note.amountPaid = note.amount; // fully paid
+
+  // --- Amount adjustment (+/-), logged ---
+  if (typeof body?.delta === "number" && body.delta !== 0) {
+    const prevAmount = note.amount;
+    const newAmount = Math.max(prevAmount + body.delta, 0);
+    if (newAmount !== prevAmount) {
+      note.amountHistory.push({
+        previousAmount: prevAmount,
+        newAmount,
+        previousPaid: note.amountPaid,
+        newPaid: note.amountPaid,
+        userId,
+        userName: await getUserName(),
+        changedAt: new Date(),
+      });
+      note.amount = newAmount;
+      note.markModified("amountHistory");
+    }
   }
 
-  await note.save(); // pre-save hook recomputes status
+  // --- Mark as paid: clear outstanding (amount -> 0), logged ---
+  if (body?.markPaid === true && note.amount > 0) {
+    note.amountHistory.push({
+      previousAmount: note.amount,
+      newAmount: 0,
+      previousPaid: note.amountPaid,
+      newPaid: note.amountPaid,
+      userId,
+      userName: await getUserName(),
+      changedAt: new Date(),
+    });
+    note.amount = 0;
+    note.markModified("amountHistory");
+  }
+
+  await note.save();
 
   return NextResponse.json({ ok: true, note });
 }
 
-// DELETE a note
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ noteId: string }> },

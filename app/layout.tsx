@@ -94,7 +94,7 @@ export default function RootLayout({
             </header>
             <main className="flex-1">
               {children}
-              <Toaster />
+              <Toaster position="top-right" />
             </main>
           </ThemeProvider>
         </body>

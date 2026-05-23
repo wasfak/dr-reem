@@ -104,7 +104,7 @@ export default function HistoryPage() {
               <Link
                 key={c._id}
                 href={`/companies/${c._id}`}
-                className="relative rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-5 backdrop-blur-2xl"
+                className="relative block overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 backdrop-blur-xl transition-colors hover:border-white/20 hover:bg-white/[0.05]"
                 style={{
                   boxShadow:
                     "0 0 40px rgba(139,92,246,0.25), 0 0 80px rgba(124,58,237,0.15)",

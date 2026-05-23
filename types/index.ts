@@ -9,6 +9,7 @@ export interface FeedNote {
   amount: number;
   amountPaid: number;
   status: NoteStatus;
+  amountHistory: AmountChange[];
 }
 
 export interface FeedEvent {
@@ -25,4 +26,12 @@ export interface Company {
   _id: string;
   name: string;
   notes?: string;
+}
+export interface AmountChange {
+  previousAmount: number;
+  newAmount: number;
+  previousPaid: number;
+  newPaid: number;
+  userName: string;
+  changedAt: string;
 }

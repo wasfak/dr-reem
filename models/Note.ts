@@ -1,4 +1,23 @@
-import { Schema, model, models, type InferSchemaType } from "mongoose";
+import {
+  Schema,
+  model,
+  models,
+  type InferSchemaType,
+  type Model,
+} from "mongoose";
+
+const AmountChangeSchema = new Schema(
+  {
+    previousAmount: { type: Number, required: true },
+    newAmount: { type: Number, required: true },
+    previousPaid: { type: Number, required: true },
+    newPaid: { type: Number, required: true },
+    userId: { type: String, required: true },
+    userName: { type: String, required: true },
+    changedAt: { type: Date, default: Date.now },
+  },
+  { _id: true },
+);
 
 const NoteSchema = new Schema(
   {
@@ -9,23 +28,23 @@ const NoteSchema = new Schema(
       index: true,
     },
     text: { type: String, required: true, trim: true },
-    amount: { type: Number, default: 0, min: 0 }, // 0 = no money attached
+    amount: { type: Number, default: 0, min: 0 },
     amountPaid: { type: Number, default: 0, min: 0 },
     status: {
       type: String,
       enum: ["unpaid", "partial", "paid"],
       default: "unpaid",
     },
+    amountHistory: { type: [AmountChangeSchema], default: [] },
     userId: { type: String, required: true },
     userName: { type: String, required: true },
   },
   { timestamps: true },
 );
 
-// Derive status from amounts before saving so it's never out of sync.
 NoteSchema.pre("save", function () {
   if (this.amount <= 0) {
-    this.status = "unpaid"; // no money = N/A, treat as unpaid
+    this.status = "unpaid";
     return;
   }
   if (this.amountPaid <= 0) this.status = "unpaid";
@@ -33,11 +52,8 @@ NoteSchema.pre("save", function () {
   else this.status = "partial";
 });
 
-NoteSchema.virtual("outstanding").get(function () {
-  return Math.max((this.amount ?? 0) - (this.amountPaid ?? 0), 0);
-});
-
 NoteSchema.index({ companyId: 1, createdAt: -1 });
 
 export type NoteDoc = InferSchemaType<typeof NoteSchema>;
-export const Note = models.Note || model("Note", NoteSchema);
+export const Note: Model<NoteDoc> =
+  (models.Note as Model<NoteDoc>) || model<NoteDoc>("Note", NoteSchema);
